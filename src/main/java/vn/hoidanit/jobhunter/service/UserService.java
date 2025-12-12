@@ -16,4 +16,6 @@ public interface UserService {
 
     void handleDeleteUser(Long id);
 
+    User handleGetUserByUsername(String email);
+
 }

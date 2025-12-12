@@ -1,22 +1,21 @@
 package vn.hoidanit.jobhunter.utils;
 
-import org.antlr.v4.runtime.misc.ObjectEqualityComparator;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
+
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpResponse;
-import org.springframework.lang.Nullable;
+
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-
-import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.http.HttpServletResponse;
 import vn.hoidanit.jobhunter.domain.RestResponse;
 
 @RestControllerAdvice
 public class FormatRestResponse implements ResponseBodyAdvice<Object> {
+
+	// @ResponseBodyAdivce cho phép bạn chăn
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class converterType) {
@@ -34,6 +33,8 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
 			Class selectedConverterType,
 			ServerHttpRequest request,
 			ServerHttpResponse response) {
+
+		//
 		HttpServletResponse servletResponse = ((ServletServerHttpResponse) response).getServletResponse();
 		int status = servletResponse.getStatus();
 
