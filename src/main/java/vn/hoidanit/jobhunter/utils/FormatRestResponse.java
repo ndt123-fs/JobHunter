@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import jakarta.servlet.http.HttpServletResponse;
 import vn.hoidanit.jobhunter.domain.RestResponse;
+import vn.hoidanit.jobhunter.utils.anotations.ApiMessage;
 
 @RestControllerAdvice
 public class FormatRestResponse implements ResponseBodyAdvice<Object> {
@@ -52,7 +53,11 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
 		} else {
 
 			// case success
-			res.setMessage("Call API SUCCESS!");
+			// toi day la controller da tra ve du lieu , sau do minh format chung 1 kieu tra
+			// ve (chi co the sua doi body)
+			// ve
+			ApiMessage msg = returnType.getMethodAnnotation(ApiMessage.class);
+			res.setMessage(msg != null ? msg.value() : "Call Api Success !");
 			res.setData(body);
 
 		}

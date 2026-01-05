@@ -5,26 +5,32 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import vn.hoidanit.jobhunter.domain.RestResponse;
 
 @RestControllerAdvice
 public class GlobalException {
-	@ExceptionHandler(value = IdInvalidException.class)
-	public ResponseEntity<RestResponse<Object>> handleException(IdInvalidException IdException) {
+	@ExceptionHandler(value = { BadCredentialsException.class, UsernameNotFoundException.class,
+			EmailInvalidException.class, IdInvalidException.class })
+	public ResponseEntity<RestResponse<Object>> handleException(Exception ex, WebRequest request) {
 
 		RestResponse<Object> res = new RestResponse<Object>();
 		res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-		res.setMessage("IdInvalidException");
-		res.setError(IdException.getMessage());
+		res.setPath(request.getDescription(false).replace("uri=", ""));
+		res.setMessage("Exception occurs....");
+		res.setError(ex.getMessage());
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 
@@ -47,9 +53,21 @@ public class GlobalException {
 
 	// return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 	// }
+	@ExceptionHandler(value = NoResourceFoundException.class)
+	public ResponseEntity<RestResponse<Object>> handleNotFoundException(NoResourceFoundException e,
+			WebRequest request) {
+		RestResponse<Object> res = new RestResponse<>();
+		res.setStatusCode(HttpStatus.NOT_FOUND.value());
+		res.setMessage("404 not found.URL may not exist !");
+		res.setError(e.getMessage());
+		res.setPath(request.getDescription(false).replace("uri=", ""));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+	}
+
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)
 	public ResponseEntity<RestResponse<Object>> handleMethodNotValidException(MethodArgumentNotValidException e,
 			WebRequest request) {
+		// lay vaidation
 		BindingResult result = e.getBindingResult();
 		final List<FieldError> fieldErrors = result.getFieldErrors();
 
