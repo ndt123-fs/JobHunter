@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 public class ResultPaginationDTO {
     private Meta meta;
-    private Object data;
+    private Object result;
 
 }

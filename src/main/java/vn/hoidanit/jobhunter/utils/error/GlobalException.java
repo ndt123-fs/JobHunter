@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -23,7 +24,7 @@ import vn.hoidanit.jobhunter.domain.RestResponse;
 @RestControllerAdvice
 public class GlobalException {
 	@ExceptionHandler(value = { BadCredentialsException.class, UsernameNotFoundException.class,
-			EmailInvalidException.class, IdInvalidException.class })
+			EmailInvalidException.class, IdInvalidException.class, MissingRequestCookieException.class })
 	public ResponseEntity<RestResponse<Object>> handleException(Exception ex, WebRequest request) {
 
 		RestResponse<Object> res = new RestResponse<Object>();

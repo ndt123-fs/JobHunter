@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.dto.Meta;
@@ -66,7 +65,7 @@ public class UserServiceImpl implements UserService {
         // Tong record hien trong trang do
         meta.setTotal(pageUser.getTotalElements());
         result.setMeta(meta);
-        result.setData(pageUser.getContent()
+        result.setResult(pageUser.getContent()
                 .stream().map(item -> new ResUserDTO(
                         item.getId(),
                         item.getName(),
@@ -74,8 +73,8 @@ public class UserServiceImpl implements UserService {
                         item.getAge(),
                         item.getGender(),
                         item.getAddress(),
-                        item.getUpdateAt(),
-                        item.getCreateAt()))
+                        item.getCreatedAt(),
+                        item.getUpdatedAt()))
                 .collect(Collectors.toList()));
         return result;
 
@@ -112,7 +111,7 @@ public class UserServiceImpl implements UserService {
         resUser.setAge(user.getAge());
         resUser.setAddress(user.getAddress());
         resUser.setGender(user.getGender());
-        resUser.setCreateAt(user.getCreateAt());
+        resUser.setCreatedAt(user.getCreatedAt());
 
         return resUser;
     }
@@ -125,7 +124,7 @@ public class UserServiceImpl implements UserService {
         resUser.setAge(user.getAge());
         resUser.setAddress(user.getAddress());
         resUser.setGender(user.getGender());
-        resUser.setUpdateAt(user.getUpdateAt());
+        resUser.setUpdatedAt(user.getUpdatedAt());
 
         return resUser;
     }
@@ -139,10 +138,25 @@ public class UserServiceImpl implements UserService {
         resUser.setAge(user.getAge());
         resUser.setAddress(user.getAddress());
         resUser.setGender(user.getGender());
-        resUser.setUpdateAt(user.getUpdateAt());
-        resUser.setCreateAt(user.getCreateAt());
+        resUser.setUpdatedAt(user.getUpdatedAt());
+        resUser.setCreatedAt(user.getCreatedAt());
 
         return resUser;
+    }
+
+    @Override
+    public void handleUpdateRefreshToken(String token, String email) {
+        User user = this.handleGetUserByUsername(email);
+        if (user != null) {
+
+            user.setRefreshToken(token);
+            this.userRepository.save(user);
+        }
+    }
+
+    @Override
+    public User getUserByRefreshTokenAndEmail(String token, String email) {
+        return this.userRepository.findByRefreshTokenAndEmail(token, email);
     }
 
 }

@@ -33,4 +33,8 @@ public interface UserService {
 
     ResUserDTO convertToResUserDTO(User user);
 
+    void handleUpdateRefreshToken(String token, String email);
+
+    User getUserByRefreshTokenAndEmail(String token, String email);
+
 }

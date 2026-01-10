@@ -18,6 +18,6 @@ public class ResCreateUserDTO {
     private String address;
     private int age;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss ", timezone = "GMT+7")
-    private Instant createAt;
+    private Instant createdAt;
 
 }

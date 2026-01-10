@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -39,28 +40,29 @@ public class User {
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
     private String address;
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss ", timezone = "GMT+7")
-    private Instant createAt;
+    private Instant createdAt;
 
-    private Instant updateAt;
-    private String createBy;
-    private String updateBy;
+    private Instant updatedAt;
+    private String createdBy;
+    private String updatedBy;
 
     @PrePersist
     public void handleBeforeCreate() {
-        this.createBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
-        this.createAt = Instant.now();
+        this.createdAt = Instant.now();
     }
 
     @PreUpdate
     public void handleBeforeUpdate() {
-        this.updateBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
-        this.updateAt = Instant.now();
+        this.updatedAt = Instant.now();
     }
 
 }
