@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
+import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.dto.ResCreateUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResUpdateUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResUpdateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.utils.anotations.ApiMessage;
 import vn.hoidanit.jobhunter.utils.error.EmailInvalidException;
@@ -80,10 +81,9 @@ public class UserController {
     @GetMapping("/users")
     @ApiMessage("fetch all user")
     public ResponseEntity<ResultPaginationDTO> getAllUser(
-            @Filter Specification<User> spec, Pageable pageable)
-    // @RequestParam("current") Optional<String> currentOptional,
-    // @RequestParam("pageSize") Optional<String> pageSizeOptional)
-    {
+            @Filter Specification<User> spec, Pageable pageable) {
+        // @RequestParam("current") Optional<String> currentOptional,
+        // @RequestParam("pageSize") Optional<String> pageSizeOptional) {
         // String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "";
         // String sPageSize = pageSizeOptional.isPresent() ? pageSizeOptional.get() :
         // "";
@@ -93,7 +93,8 @@ public class UserController {
 
         // Pageable pageable = PageRequest.of(current - 1, pageSize);
 
-        ResultPaginationDTO userList = this.userService.handleGetAllUser(spec, pageable);
+        ResultPaginationDTO userList = this.userService.handleGetAllUser(spec,
+                pageable);
         return ResponseEntity.status(HttpStatus.OK).body(userList);
 
     }
@@ -126,5 +127,6 @@ public class UserController {
         // return ResponseEntity.status(HttpStatus.OK).body("delete user successfully");
         return ResponseEntity.ok(null);
     }
+
 
 }
