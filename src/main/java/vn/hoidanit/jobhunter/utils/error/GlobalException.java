@@ -2,6 +2,7 @@ package vn.hoidanit.jobhunter.utils.error;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ import vn.hoidanit.jobhunter.domain.response.RestResponse;
 @RestControllerAdvice
 public class GlobalException {
 	@ExceptionHandler(value = { BadCredentialsException.class, UsernameNotFoundException.class,
-			EmailInvalidException.class, IdInvalidException.class, MissingRequestCookieException.class })
+			EmailInvalidException.class, IdInvalidException.class, MissingRequestCookieException.class, NoSuchElementException.class })
 	public ResponseEntity<RestResponse<Object>> handleException(Exception ex, WebRequest request) {
 
 		RestResponse<Object> res = new RestResponse<Object>();

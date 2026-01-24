@@ -1,0 +1,62 @@
+package vn.hoidanit.jobhunter.domain;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import vn.hoidanit.jobhunter.service.SecurityUtil;
+import vn.hoidanit.jobhunter.utils.constant.LevelEnum;
+
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+
+@Entity
+@Table(name = "jobs")
+@Getter
+@Setter
+public class Job {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private String name;
+    private String location;
+    private double salary;
+    private int quantity;
+    private LevelEnum level;
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String description;
+    private Instant startDate;
+    private Instant endDate;
+    private boolean active;
+    private Instant createdAt;
+    private Instant updatedAt;
+    private String createdBy;
+    private String updatedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+
+    @ManyToMany
+    @JsonIgnoreProperties(value = {"jobs"}) // dung cai nay de bo cai thuoc tinh "jobs" khi truyen skill len phia FE, tranh vong lap vo han
+    @JoinTable(name = "job_skill",joinColumns = @JoinColumn(name = "job_id"),inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private List<Skill> skills;
+
+
+    @PrePersist
+    public void handleBeforeCreate() {
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
+        this.createdAt = Instant.now();
+
+    }
+    @PreUpdate
+    public void handleBeforeUpdate(){
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
+        this.updatedAt = Instant.now();
+
+    }
+
+}

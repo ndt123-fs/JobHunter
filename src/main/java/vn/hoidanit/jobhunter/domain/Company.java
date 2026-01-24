@@ -51,6 +51,10 @@ public class Company {
     @JsonIgnore // khi nào hỏi mới lấy dùng lazy
     List<User> users;
 
+    @OneToMany(mappedBy = "company",fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<Job> jobs;
+
     @PrePersist
     public void handleBeforeCreate() {
         this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
