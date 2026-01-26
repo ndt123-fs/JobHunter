@@ -3,6 +3,7 @@ package vn.hoidanit.jobhunter.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.hoidanit.jobhunter.service.SecurityUtil;
@@ -20,7 +21,9 @@ public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotBlank(message = "name khong duoc de trong")
     private String name;
+    @NotBlank(message = "location khong duoc de trong")
     private String location;
     private double salary;
     private int quantity;

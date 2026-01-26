@@ -3,10 +3,7 @@ package vn.hoidanit.jobhunter.utils.error;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -91,4 +88,16 @@ public class GlobalException {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 	}
 
+@ExceptionHandler(value = { StorageException.class })
+	public ResponseEntity<RestResponse<Object>> handleUploadFileException(StorageException ex, WebRequest request) {
+
+		RestResponse<Object> res = new RestResponse<Object>();
+		res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+		res.setPath(request.getDescription(false).replace("uri=", ""));
+		res.setMessage("Uploadfile Exception !!!....");
+		res.setError(ex.getMessage());
+
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+
+	}
 }

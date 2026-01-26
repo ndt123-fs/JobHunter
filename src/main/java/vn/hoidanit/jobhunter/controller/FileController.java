@@ -1,0 +1,65 @@
+package vn.hoidanit.jobhunter.controller;
+
+import jakarta.validation.Valid;
+import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import vn.hoidanit.jobhunter.domain.response.file.ResUploadFileDTO;
+import vn.hoidanit.jobhunter.service.FileService;
+import vn.hoidanit.jobhunter.utils.anotations.ApiMessage;
+import vn.hoidanit.jobhunter.utils.error.StorageException;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+
+@RestController
+@RequestMapping("api/v1")
+@Validated
+public class FileController {
+
+    @Value("${hoidanit.upload-file.base-uri}")
+    private String baseUri;
+
+    private FileService fileService;
+
+    public FileController(FileService fileService) {
+        this.fileService = fileService;
+    }
+
+    @PostMapping("/files")
+    @ApiMessage("Upload single file!")
+    public ResponseEntity<ResUploadFileDTO> upload(@Valid
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("folder") String folder) throws URISyntaxException, IOException,StorageException {
+        // check validated
+        if (file == null &&  file.isEmpty()) {
+            throw new StorageException("File is empty .Please upload a file!");
+        }
+        //
+        String fileName = file.getOriginalFilename();
+        List<String> alowedExtentions = Arrays.asList("pdf","png","jpg","jpeg","doc","txt");
+        boolean ísValid = alowedExtentions.stream().anyMatch(item->fileName.toLowerCase().endsWith(item));
+        if (!ísValid) {
+            throw new StorageException("Invalid extention Exception , only alow : " + alowedExtentions.toString());
+        }
+        // tạo folder
+        this.fileService.createNewFolder(baseUri + folder); // vi o  trong application co "/" nen k can nua
+        //save file to folder
+        String uploadFile = this.fileService.storeFileInFolder(file, folder);
+        ResUploadFileDTO res = new ResUploadFileDTO(uploadFile, Instant.now());
+
+
+        return ResponseEntity.status(HttpStatus.CREATED.value()).body(res);
+    }
+
+}

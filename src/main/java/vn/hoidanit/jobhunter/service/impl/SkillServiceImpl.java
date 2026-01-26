@@ -4,7 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import vn.hoidanit.jobhunter.domain.Job;
 import vn.hoidanit.jobhunter.domain.Skill;
+import vn.hoidanit.jobhunter.domain.response.ResCreateJobDTO;
+import vn.hoidanit.jobhunter.domain.response.ResDTOGetListSkill;
 import vn.hoidanit.jobhunter.domain.response.ResSkillDTO;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.repository.SkillRepository;
@@ -32,10 +35,11 @@ public class SkillServiceImpl implements SkillService {
     public boolean checkNameSkill(String name) {
         return this.skillRepository.existsByName(name);
     }
+
     @Override
-    public Skill checkId(long id){
+    public Skill checkId(long id) {
         Optional<Skill> check = this.skillRepository.findById(id);
-        if(check.isPresent()){
+        if (check.isPresent()) {
             return check.get();
         }
         return null;
@@ -53,9 +57,10 @@ public class SkillServiceImpl implements SkillService {
         }
         return null;
     }
+
     @Override
-    public ResultPaginationDTO handleGetAllSkill(Specification<Skill> spec, Pageable pageable){
-        Page<Skill> pageSkill = this.skillRepository.findAll(spec,pageable);
+    public ResultPaginationDTO handleGetAllSkill(Specification<Skill> spec, Pageable pageable) {
+        Page<Skill> pageSkill = this.skillRepository.findAll(spec, pageable);
         ResultPaginationDTO result = new ResultPaginationDTO();
         ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
 
@@ -71,7 +76,8 @@ public class SkillServiceImpl implements SkillService {
 
         return result;
     }
-    public void handleDeleteSkill(long id){
+
+    public void handleDeleteSkill(long id) {
         // delete skill trong jobs
         Optional<Skill> skill = this.skillRepository.findById(id);
         Skill currentSkill = skill.get();
@@ -79,5 +85,17 @@ public class SkillServiceImpl implements SkillService {
         // delete skill
         this.skillRepository.delete(currentSkill);
     }
+@Override
+    public List<Skill> findListSkillById(List<Long> id) {
+
+        return this.skillRepository.findByIdIn(id);
+    }
+@Override
+    public ResDTOGetListSkill convertTo(Skill skill) {
+        ResDTOGetListSkill aSkill = new ResDTOGetListSkill();
+        aSkill.setName(skill.getName());
+        return aSkill;
+    }
+
 
 }
